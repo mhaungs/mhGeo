@@ -47,6 +47,10 @@
         var mhLog = require("./src/lib/mhlog.js");
         mhLog.setLoggingLevel(mhLog.LEVEL.DEBUG);
 
+        /*
+         ************ Module Variables *************
+         */
+
         // Exported Container and test container
         var mhGeo = {};
         mhGeo.test = {};
@@ -63,15 +67,13 @@
         // Private variables
 
         /*
-         ************ Module Variables *************
-         */
-
-        /*
          ************ Initialization methods *************
          */
 
         /*
          ************ Public methods *************
+         * Note:  Must be bound to "this" when calling.  Especially important when
+         * passing one of the functions below as a callback.
          */
 
         mhGeo.startWatch = function(initMap, locationEventHandler) {
@@ -79,7 +81,7 @@
             var wrappedHandler;
 
             // Set current location immediately and call initMap..then set a watchpoint for future updates
-            navigator.geolocation.getCurrentPosition(initMap);
+            navigator.geolocation.getCurrentPosition(initMap, displayError, geoOptions);
 
             // Add current location tracking
             if (this.watchPointId === null)
@@ -94,8 +96,8 @@
         };
 
         mhGeo.stopWatch = function() {
-            mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: called: " + this.watchPointId);
-            mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: geoOptions = " + JSON.stringify(geoOptions));
+            mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: watchPointId: " + this.watchPointId +
+                    " geoOptions = " + JSON.stringify(geoOptions));
             if (this.watchPointId)
             {
                 mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: clearWatch");
@@ -171,10 +173,11 @@
 // End Module Footer
 
 /*
- * If this is in a browser, then need to create/use a global variable
- * to hold module exports.  If this is in Node, use module.exports.
- * @returns {}
+ * If this is in a browser not using inject.s, then need to create/use a
+ * global variable to hold module exports.  If this is in Node or a browser
+ * using inject.js, use module.exports.
  */
+
 function getGlobalContainer() {
     var container;
 
