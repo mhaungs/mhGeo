@@ -1,0 +1,45 @@
+{
+  "name": "inject",
+  "version": "0.4.2",
+  "main": [
+    "dist/inject-ie7.js",
+    "dist/inject-ie7.min.js",
+    "dist/inject-plugins.js",
+    "dist/inject-plugins.min.js",
+    "dist/inject.js",
+    "dist/inject.min.js",
+    "dist/LICENSE",
+    "dist/README.markdown",
+    "dist/relay.html",
+    "dist/relay.swf"
+  ],
+  "ignore": [
+    ".jshintrc",
+    ".gitignore",
+    "README.md"
+  ],
+  "description": "Dependency manager for the browsers with CommonJS and AMD Support",
+  "keywords": [
+    "inject",
+    "dependency",
+    "dependencies",
+    "commonjs",
+    "amd",
+    "module",
+    "loader"
+  ],
+  "license": [
+    "Apache",
+    "MIT"
+  ],
+  "homepage": "https://github.com/linkedin/inject-bower",
+  "_release": "0.4.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.4.2",
+    "commit": "18ce0c4c7483165b1c53dfef9325cab6ae1814c2"
+  },
+  "_source": "git://github.com/linkedin/inject-bower.git",
+  "_target": "~0.4.2-1",
+  "_originalSource": "inject"
+}

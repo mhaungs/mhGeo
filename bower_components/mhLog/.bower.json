@@ -1,0 +1,31 @@
+{
+  "name": "mhLog",
+  "version": "0.1.11",
+  "main": "mhlog.js",
+  "ignore": [
+    ".git*",
+    "package.json",
+    "bower_components",
+    "src",
+    "node_modules",
+    "README.txt",
+    "gruntfile.js",
+    "testMhlog.html",
+    "nbproject",
+    "tarball"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "inject": "~0.4.2-1"
+  },
+  "homepage": "https://github.com/mhaungs/mhlog",
+  "_release": "0.1.11",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.11",
+    "commit": "5b496b52ddda0d3b90f15944fe9e2a05bc5827cd"
+  },
+  "_source": "git@github.com:mhaungs/mhlog.git",
+  "_target": "*",
+  "_originalSource": "git@github.com:mhaungs/mhlog.git"
+}

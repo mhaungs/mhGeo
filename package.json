@@ -1,0 +1,26 @@
+{
+    "name": "mhlog",
+    "description": "geolocation watchpoint library.",
+    "version": "0.1.0",
+    "author": {
+        "name": "Michael Haungs",
+        "email": "mhaungs@calpoly.edu",
+        "url": "http://www.csc.calpoly.edu/~mhaungs"
+    },
+    "keywords": [
+        "geolocation",
+        "watchpoint"
+    ],
+    "main": "mhGeo.js",
+    "repository": "git://github.com/mhaungs/mhGeo.git",
+    "engines": {
+        "node": "*"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-jshint": "~0.6.0",
+        "grunt-contrib-watch": "~0.4.4",
+        "grunt-contrib-copy": "~0.4.1",
+        "grunt-shell": "~0.3.0"
+    }
+}

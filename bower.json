@@ -1,0 +1,22 @@
+{
+    "name": "mhGeo",
+    "version": "0.1.0",
+    "main": "mhGeo.js",
+    "ignore": [
+        ".git*",
+        "package.json",
+        "bower_components",
+        "src",
+        "node_modules",
+        "README.txt",
+        "gruntfile.js",
+        "testMhlog.html",
+        "nbproject",
+        "tarball"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "inject": "~0.4.2-1",
+        "mhLog": "git@github.com:mhaungs/mhlog.git"
+    }
+}

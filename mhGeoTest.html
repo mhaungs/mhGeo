@@ -1,0 +1,63 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2013 Michael Haungs <mhaungs at calpoly.edu>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>mhGeo Tester</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="src/css/mhGeoTest.css">
+
+        <!-- Typically, add javascript at end of body, but this app is not critical to display quickly -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCNo4qqqQeHC2J1zEQSA-9sf95pBACZO4&sensor=true"></script>
+
+        <script type="text/javascript" src="src/lib/inject/inject.js"></script>
+        <script type="text/javascript">
+            Inject.reset();
+            Inject.setModuleRoot(".");
+            Inject.setExpires(0);
+            window.addEventListener('load', function() {
+                require.run('src/js/mhGeoTestMain.js');
+            });
+        </script>
+
+    </head>
+
+    <body>
+
+        <div class="container-fluid">
+            <h1>mhGeo Test</h1>
+            <div id="mapview" style="width:device-width;height:300px;"></div>
+            <h3>Tracking Information</h3>
+            <div id="pointDisplay"></div>
+            <div id="accuracyDisplay"></div>
+
+            <br><hr>
+
+            <h2>Error messages</h2>
+            <div id="errorMsg">No Errors.</div>
+        </div>
+    </body>
+</html>
