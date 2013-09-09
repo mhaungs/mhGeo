@@ -44,7 +44,7 @@
         "use strict";  // EMCAScript 5 pragma
 
         // External Modules
-        var mhLog = require("./src/lib/mhlog.js");
+        var mhLog = require("/src/lib/mhlog.js");
         mhLog.setLoggingLevel(mhLog.LEVEL.DEBUG);
 
         /*
