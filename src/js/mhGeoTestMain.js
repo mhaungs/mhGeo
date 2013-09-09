@@ -116,8 +116,9 @@
         });
     }
 
-    function scrollMapToPosition(latlong) {
+    function scrollMapToPosition(position) {
         console.log("In scrollMapToPosition");
+        var latlong = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         map.panTo(latlong);
         marker.setPosition(latlong);
     }

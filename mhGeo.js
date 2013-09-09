@@ -117,19 +117,18 @@
          */
         function __locationEventHandler(userCallback, position)
         {
-            var currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-            mhLog.log(mhLog.LEVEL.DEBUG, "__locationEventHandler: location = " + currentLocation);
+            mhLog.log(mhLog.LEVEL.DEBUG, "__locationEventHandler: lat = " + position.coords.latitude +
+                    " lng = " + position.coords.longitude);
 
             // if currentLocation accuracy is within a delta {
             /* jshint validthis:true */
-            this.locationHistory.push(currentLocation);  // "this" is bound using "bind" previously.
+            this.locationHistory.push(position);  // "this" is bound using "bind" previously.
 
             // using history analysis, tweak currentLocation
             // prediction using exponential smoothing?  function that approxs results?
             // look at last 4-8 points.  Is it a shape?  choose center point?
 
-            userCallback(currentLocation);
+            userCallback(position);
             // } else {
             // message that too inaccurate
             //}
