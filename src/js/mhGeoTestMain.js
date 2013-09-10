@@ -63,7 +63,7 @@
         // Display map and track location
         mhGeo.startWatch(showMap, scrollMapToPosition);
 
-        window.setTimeout(mhGeo.stopWatch.bind(mhGeo), 5000);
+        window.setTimeout(mhGeo.stopWatch, 5000);
     };
 
     mhGeoTestMain.init(); // Start Initialization
@@ -117,7 +117,7 @@
     }
 
     function scrollMapToPosition(position) {
-        console.log("In scrollMapToPosition");
+        console.log("In scrollMapToPosition, accuracy = " + position.coords.accuracy);
         var latlong = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         map.panTo(latlong);
         marker.setPosition(latlong);

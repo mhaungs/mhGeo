@@ -1,7 +1,7 @@
 {
     "name": "mhlog",
     "description": "geolocation watchpoint library.",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "author": {
         "name": "Michael Haungs",
         "email": "mhaungs@calpoly.edu",

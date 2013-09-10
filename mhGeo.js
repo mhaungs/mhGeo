@@ -37,8 +37,10 @@
 (function(parent) {
 // End Module Header
 
-    // Assigning exports like this allows dependency injection
-    // (aka var sample = require("./sample.js")(app);)
+    // Assigning exports like this:
+    //     * allows dependency injection (aka var sample = require("./sample.js")(app);)
+    //     * Creates a new mhGeo object everytime it is called; there is no code sharing
+    //       between objects.
     parent.exports = function() {
 
         "use strict";  // EMCAScript 5 pragma
@@ -55,16 +57,18 @@
         var mhGeo = {};
         mhGeo.test = {};
 
-        // Static variables
+        // Private variables (stored in closure of object)
         var geoOptions = {
             timeout: 10000, // Wait up to 10 seconds before failing
             enableHighAccuracy: true,
             maximumAge: 0  // always get a fresh location
         };
-
-        var maxAccuracy = 300;
-
-        // Private variables
+        var minAccuracy = 300;
+        var p = 0.2;  // smothing factor (puts more weight on new data)
+        var watchPointId = null;
+        var locationHistory;
+        var averageAccuracy = 100;  // Start with mediocre accuracy
+        var averageDistanceMoved = 0;
 
         /*
          ************ Initialization methods *************
@@ -72,8 +76,6 @@
 
         /*
          ************ Public methods *************
-         * Note:  Must be bound to "this" when calling.  Especially important when
-         * passing one of the functions below as a callback.
          */
 
         mhGeo.startWatch = function(initMap, locationEventHandler) {
@@ -84,26 +86,33 @@
             navigator.geolocation.getCurrentPosition(initMap, displayError, geoOptions);
 
             // Add current location tracking
-            if (this.watchPointId === null)
+            if (watchPointId === null)
             {
-                mhLog.log(mhLog.LEVEL.DEBUG, "startWatch: watchPosition called." + this.watchPointId);
-                this.locationHistory = [];  // start with a fresh history
-                wrappedHandler = __locationEventHandler.bind(this, locationEventHandler); // Curry handler and bind "this"
-                this.watchPointId = navigator.geolocation.watchPosition(wrappedHandler, displayError, geoOptions);
+                mhLog.log(mhLog.LEVEL.DEBUG, "startWatch: watchPosition called." + watchPointId);
+                locationHistory = [];  // start with a fresh history
+                averageAccuracy = 100;  // start with mediocre accuracy
+                averageDistanceMoved = 0;
+                wrappedHandler = __locationEventHandler.bind(this, locationEventHandler); // Curry handler
+                watchPointId = navigator.geolocation.watchPosition(wrappedHandler, displayError, geoOptions);
             } else {
                 mhLog.log(mhLog.LEVEL.PRODUCTION, "startWatch Error: watchPosition already called");
             }
         };
 
         mhGeo.stopWatch = function() {
-            mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: watchPointId: " + this.watchPointId +
+            mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: watchPointId: " + watchPointId +
                     " geoOptions = " + JSON.stringify(geoOptions));
-            if (this.watchPointId)
+            if (watchPointId)
             {
                 mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: clearWatch");
-                navigator.geolocation.clearWatch(this.watchPointId);
-                this.watchPointId = null;
+                mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: aa = " + mhGeo.getAverageAccuracy());
+                navigator.geolocation.clearWatch(watchPointId);
+                watchPointId = null;
             }
+        };
+
+        mhGeo.getAverageAccuracy = function() {
+            return averageAccuracy;
         };
 
         /*
@@ -112,6 +121,7 @@
 
         /**
          * __locationEventHandler : geolocation watch handler to track user position
+         * @param {function} userCallback user callback to handle updated position
          * @param {position object} position
          * @returns {undefined}
          */
@@ -120,18 +130,62 @@
             mhLog.log(mhLog.LEVEL.DEBUG, "__locationEventHandler: lat = " + position.coords.latitude +
                     " lng = " + position.coords.longitude);
 
-            // if currentLocation accuracy is within a delta {
-            /* jshint validthis:true */
-            this.locationHistory.push(position);  // "this" is bound using "bind" previously.
+            if (position.coords.accuracy < minAccuracy) {
+                /* jshint validthis:true */
+                locationHistory.push(position);  // "this" is bound using "bind" previously.
 
-            // using history analysis, tweak currentLocation
-            // prediction using exponential smoothing?  function that approxs results?
-            // look at last 4-8 points.  Is it a shape?  choose center point?
+                // For the heck of it, use last point plus this one to calculate heading and
+                // then compare to position.coords.heading
+                mhLog.log(mhLog.LEVEL.DEBUG, "__locationEventHandler: heading = " + position.coords.heading);
 
-            userCallback(position);
-            // } else {
-            // message that too inaccurate
-            //}
+                userCallback(positionCorrection(position));
+            } else {
+                // message that too inaccurate
+                mhLog.log(mhLog.LEVEL.PRODUCTION, "Geolocation Watch:  Dropping inaccurate point (" +
+                        position.coords.accuracy + ").");
+                averageAccuracy += 20;  // Penalize accuracy
+                // cap how bad accuracy can get
+                if (averageAccuracy > 500) {
+                    averageAccuracy = 500;
+                }
+
+            }
+        }
+
+        function positionCorrection(position) {
+            var d, latlongTo, latlongFrom, latlongToAdj;
+            var len = locationHistory.length;
+            var admPrev = averageDistanceMoved;
+
+            mhLog.log(mhLog.LEVEL.DEBUG, "positionCorrection: " + position);
+
+            // Movement Correction
+            if (len > 1) {
+                latlongTo = google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                latlongFrom = google.maps.LatLng(locationHistory[len - 1].coords.latitude,
+                        locationHistory[len - 1].coords.longitude);
+
+                d = google.maps.geometry.spherical.computeDistanceBetween(latlongFrom, latlongTo);
+                averageDistanceMoved = p * averageDistanceMoved + (1 - p) * d;
+                // Given the adjustments, how far should we go?
+                latlongToAdj = google.maps.geometry.spherical.interpolate(latlongFrom,
+                        latlongTo, averageDistanceMoved / d);
+                // transfer adjustments to "position" variable
+                position.coords.latitude = latlongToAdj.lat();
+                position.coords.longitude = latlongToAdj.lng();
+            }
+
+            // Accuracy Correction (exponential moving average)
+            averageAccuracy = (averageAccuracy * p) + ((1 - p) * position.coords.accuracy);
+            if (averageAccuracy < 50) {
+                mhLog.log(mhLog.LEVEL.DEBUG, "positionCorrection: GREEN");
+            } else if (averageAccuracy < 200) {
+                mhLog.log(mhLog.LEVEL.DEBUG, "positionCorrection: YELLOW");
+            } else {  // this is bascially, 200-300
+                mhLog.log(mhLog.LEVEL.DEBUG, "positionCorrection: RED");
+            }
+
+            return position;
         }
 
         /*
@@ -161,10 +215,7 @@
          ************ Export Module *************
          */
 
-        return Object.create(mhGeo, {
-            watchPointId: {writable: true, enumerable: true, value: null},
-            locationHistory: {writable: true, enumerable: true, value: []}
-        });
+        return mhGeo;
     };
 
 // Begin Module Footer
