@@ -115,6 +115,10 @@
             return averageAccuracy;
         };
 
+        mhGeo.setMinAccuracy = function(min) {
+            minAccuracy = min;
+        }
+
         /*
          ************ Private methods *************
          */
@@ -177,13 +181,6 @@
 
             // Accuracy Correction (exponential moving average)
             averageAccuracy = (averageAccuracy * p) + ((1 - p) * position.coords.accuracy);
-            if (averageAccuracy < 50) {
-                mhLog.log(mhLog.LEVEL.DEBUG, "positionCorrection: GREEN");
-            } else if (averageAccuracy < 200) {
-                mhLog.log(mhLog.LEVEL.DEBUG, "positionCorrection: YELLOW");
-            } else {  // this is bascially, 200-300
-                mhLog.log(mhLog.LEVEL.DEBUG, "positionCorrection: RED");
-            }
 
             return position;
         }
