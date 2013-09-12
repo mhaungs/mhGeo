@@ -117,7 +117,7 @@
 
         mhGeo.setMinAccuracy = function(min) {
             minAccuracy = min;
-        }
+        };
 
         /*
          ************ Private methods *************
