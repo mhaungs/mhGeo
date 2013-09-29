@@ -47,6 +47,7 @@
 
         // External Modules
         var mhLog = require("/src/lib/mhlog.js");
+        // Note:  Will inherit the logging level
         mhLog.setLoggingLevel(mhLog.LEVEL.DEBUG);
 
         /*
@@ -59,14 +60,14 @@
 
         // Private variables (stored in closure of object)
         var geoOptions = {
-            timeout: 10000, // Wait up to 10 seconds before failing
+            timeout: 30000, // Wait up to 10 seconds before failing
             enableHighAccuracy: true,
             maximumAge: 0  // always get a fresh location
         };
         var minAccuracy = 300;
         var p = 0.2;  // smothing factor (puts more weight on new data)
         var watchPointId = null;
-        var locationHistory;
+        var latlongFrom;
         var averageAccuracy = 100;  // Start with mediocre accuracy
         var averageDistanceMoved = 0;
 
@@ -89,7 +90,7 @@
             if (watchPointId === null)
             {
                 mhLog.log(mhLog.LEVEL.DEBUG, "startWatch: watchPosition called." + watchPointId);
-                locationHistory = [];  // start with a fresh history
+                latlongFrom = null;  // start with a fresh history
                 averageAccuracy = 100;  // start with mediocre accuracy
                 averageDistanceMoved = 0;
                 wrappedHandler = __locationEventHandler.bind(this, locationEventHandler); // Curry handler
@@ -104,7 +105,6 @@
                     " geoOptions = " + JSON.stringify(geoOptions));
             if (watchPointId)
             {
-                mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: clearWatch");
                 mhLog.log(mhLog.LEVEL.DEBUG, "stopWatch: aa = " + mhGeo.getAverageAccuracy());
                 navigator.geolocation.clearWatch(watchPointId);
                 watchPointId = null;
@@ -135,14 +135,9 @@
                     " lng = " + position.coords.longitude);
 
             if (position.coords.accuracy < minAccuracy) {
-                /* jshint validthis:true */
-                locationHistory.push(position);  // "this" is bound using "bind" previously.
-
-                // For the heck of it, use last point plus this one to calculate heading and
-                // then compare to position.coords.heading
-                mhLog.log(mhLog.LEVEL.DEBUG, "__locationEventHandler: heading = " + position.coords.heading);
-
-                userCallback(positionCorrection(position));
+                // FIXME:  Future work...this possible has errors:  positionCorrection(position);
+                accuracySmoothing(position);
+                userCallback(position);
             } else {
                 // message that too inaccurate
                 mhLog.log(mhLog.LEVEL.PRODUCTION, "Geolocation Watch:  Dropping inaccurate point (" +
@@ -157,32 +152,37 @@
         }
 
         function positionCorrection(position) {
-            var d, latlongTo, latlongFrom, latlongToAdj;
-            var len = locationHistory.length;
-            var admPrev = averageDistanceMoved;
+            var d, latlongTo, latlongToAdj;
 
-            mhLog.log(mhLog.LEVEL.DEBUG, "positionCorrection: " + position);
+            latlongTo = google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
             // Movement Correction
-            if (len > 1) {
-                latlongTo = google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                latlongFrom = google.maps.LatLng(locationHistory[len - 1].coords.latitude,
-                        locationHistory[len - 1].coords.longitude);
-
+            if (latlongFrom) {
                 d = google.maps.geometry.spherical.computeDistanceBetween(latlongFrom, latlongTo);
-                averageDistanceMoved = p * averageDistanceMoved + (1 - p) * d;
-                // Given the adjustments, how far should we go?
-                latlongToAdj = google.maps.geometry.spherical.interpolate(latlongFrom,
-                        latlongTo, averageDistanceMoved / d);
-                // transfer adjustments to "position" variable
-                position.coords.latitude = latlongToAdj.lat();
-                position.coords.longitude = latlongToAdj.lng();
+                if (d >= averageDistanceMoved) {
+                    averageDistanceMoved = p * averageDistanceMoved + (1 - p) * d;
+                    // Given the adjustments, how far should we go?
+                    latlongToAdj = google.maps.geometry.spherical.interpolate(latlongFrom,
+                            latlongTo, averageDistanceMoved / d);
+                    // transfer adjustments to "position" variable
+                    position.coords.latitude = latlongToAdj.lat();
+                    position.coords.longitude = latlongToAdj.lng();
+                }
+                else {
+                    averageDistanceMoved = d;
+                }
             }
 
-            // Accuracy Correction (exponential moving average)
-            averageAccuracy = (averageAccuracy * p) + ((1 - p) * position.coords.accuracy);
+            // Save previous position
+            latlongFrom = latlongTo;
+        }
 
-            return position;
+        /**
+         * Accuracy Correction (exponential moving average)
+         * @param {Coordinates} position
+         */
+        function accuracySmoothing(position) {
+            averageAccuracy = (averageAccuracy * p) + ((1 - p) * position.coords.accuracy);
         }
 
         /*
