@@ -54,7 +54,7 @@
          ************ Module Variables *************
          */
 
-        // Exported Container and test container
+        // Exported Container and test container  (Leave this here...do want unique copies everytime called.)
         var mhGeo = {};
         mhGeo.test = {};
 
