@@ -1,9 +1,9 @@
 {
     "name": "mhLog",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "main": "mhlog.js",
     "ignore": [
-		".git*",
+        ".git*",
         "package.json",
         "bower_components",
         "src",
@@ -12,10 +12,10 @@
         "gruntfile.js",
         "testMhlog.html",
         "nbproject",
-		"tarball"
+        "tarball"
     ],
     "dependencies": {},
     "devDependencies": {
-        "inject": "~0.4.2-1"
+        "inject": "*"
     }
 }
