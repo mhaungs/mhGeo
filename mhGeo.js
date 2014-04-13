@@ -39,14 +39,14 @@
 
     // Assigning exports like this:
     //     * allows dependency injection (aka var sample = require("./sample.js")(app);)
-    //     * Creates a new mhGeo object everytime it is called; there is no code sharing
+    //     * Creates a new mhGeo object every time it is called; there is no code sharing
     //       between objects.
     parent.exports = function() {
 
         "use strict";  // EMCAScript 5 pragma
 
         // External Modules
-        var mhLog = require("/src/lib/mhlog.js");
+        var mhLog = require("/src/lib/mhlog.js")();
         // Note:  Will inherit the logging level
         mhLog.setLoggingLevel(mhLog.LEVEL.DEBUG);
 
@@ -54,7 +54,7 @@
          ************ Module Variables *************
          */
 
-        // Exported Container and test container  (Leave this here...do want unique copies everytime called.)
+        // Exported Container and test container  (Leave this here...do want unique copies every time called.)
         var mhGeo = {};
         mhGeo.test = {};
 
