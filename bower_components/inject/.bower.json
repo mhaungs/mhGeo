@@ -1,6 +1,6 @@
 {
   "name": "inject",
-  "version": "0.4.2",
+  "version": "0.5.1",
   "main": [
     "dist/inject-ie7.js",
     "dist/inject-ie7.min.js",
@@ -33,13 +33,13 @@
     "MIT"
   ],
   "homepage": "https://github.com/linkedin/inject-bower",
-  "_release": "0.4.2",
+  "_release": "0.5.1",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.2",
-    "commit": "18ce0c4c7483165b1c53dfef9325cab6ae1814c2"
+    "tag": "0.5.1",
+    "commit": "aa0f45f16fb0add8e684de46218dabf2485ed490"
   },
   "_source": "git://github.com/linkedin/inject-bower.git",
-  "_target": "~0.4.2-1",
+  "_target": "*",
   "_originalSource": "inject"
 }
