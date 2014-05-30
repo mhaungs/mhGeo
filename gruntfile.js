@@ -10,7 +10,7 @@ module.exports = function(grunt)
                         expand: true,
                         cwd: 'bower_components/mhLog/',
                         src: ['mhlog.js'],
-                        dest: 'src/lib/',
+                        dest: 'src/lib/mhLog',
                         filter: 'isFile'
                     },
                     {
