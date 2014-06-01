@@ -22,33 +22,27 @@
  * THE SOFTWARE.
  */
 
-/*
- * mhGeo
- *
- * Description:  Provide an accurate (within a delta) location watchpoint
- *
- * Copyright (c) 2013 Michael Haungs <mhaungs at calpoly.edu>
- * License: MIT
- *
- * @author Michael Haungs <mhaungs at calpoly.edu>
+/**
+ * @name mhGeo
+ * @version 0.1 [June 1, 2014]
+ * @author Michael Haungs
+ * @copyright Copyright 2012 Michael Haungs [mhaungs at calpoly.edu]
+ * @fileoverview Provide an accurate (within a delta) location watchpoint.
  */
 
+
 // Begin Module Header
-(function(parent) {
+(function (parent) {
 // End Module Header
 
-    // Assigning exports like this:
-    //     * allows dependency injection (aka var sample = require("./sample.js")(app);)
-    //     * Creates a new mhGeo object every time it is called; there is no code sharing
-    //       between objects.
-    parent.exports = function() {
+    // Assigning exports like this allows dependency injection
+    // (aka var sample = require("./sample.js")(app);)
+
+    // Creates a new mhGeo object every time it is called; there is no code sharing
+    // between objects.
+    parent.exports = function(mhLog) {
 
         "use strict";  // EMCAScript 5 pragma
-
-        // External Modules
-        var mhLog = require("/src/lib/mhLog/mhlog.js")();
-        // Note:  Will inherit the logging level
-        mhLog.setLoggingLevel(mhLog.LEVEL.DEBUG);
 
         /*
          ************ Module Variables *************

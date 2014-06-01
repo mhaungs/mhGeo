@@ -40,7 +40,8 @@
     "use strict";  // EMCAScript 5 pragma
 
     // External Modules
-    var mhGeo = require("mhGeo.js")();
+    var mhLog = require("src/lib/mhLog/mhlog.js");
+    var mhGeo = require("mhGeo.js")(mhLog);
 
     // Exported Container and test container
     var mhGeoTestMain = {};

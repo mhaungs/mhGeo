@@ -1,6 +1,6 @@
 {
   "name": "mhLog",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "mhlog.js",
   "ignore": [
     ".git*",
@@ -16,14 +16,14 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "inject": "*"
+    "inject": "latest"
   },
   "homepage": "https://github.com/mhaungs/mhlog",
-  "_release": "0.2.0",
+  "_release": "0.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "0.2.0",
-    "commit": "0e8304a0a360f75bf11921023bb2194d326417a7"
+    "tag": "0.2.1",
+    "commit": "a39ae18c5410b4070e2e39e71c148094c337717c"
   },
   "_source": "git@github.com:mhaungs/mhlog.git",
   "_target": "*",

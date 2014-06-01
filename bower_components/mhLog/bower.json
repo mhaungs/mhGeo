@@ -1,6 +1,6 @@
 {
     "name": "mhLog",
-    "version": "0.1.12",
+    "version": "0.2.1",
     "main": "mhlog.js",
     "ignore": [
         ".git*",
@@ -16,6 +16,6 @@
     ],
     "dependencies": {},
     "devDependencies": {
-        "inject": "*"
+        "inject": "latest"
     }
 }

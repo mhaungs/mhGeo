@@ -22,16 +22,14 @@
  * THE SOFTWARE.
  */
 
-/*
- * mhLog
- *
- * Description: A simple utility to control log output.  You can optionally display
+/**
+ * @name mhLog
+ * @version 0.1 [June 1, 2014]
+ * @author Michael Haungs
+ * @copyright Copyright 2012 Michael Haungs [mhaungs at calpoly.edu]
+ * @fileoverview A simple utility to control log output.  You can optionally display
  * an abbreviated call stack to better understand the location of the message.
- *
- * @author mhaungs
  */
-
-//FIXME:  should upgrade module structure.  (see mhGeo.js)
 
 /* global exports: true */
 module.exports = function() {
